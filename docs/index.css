@@ -6,20 +6,16 @@ body {
   background-repeat: no-repeat;
   display: inline-block;
   border: none;
-}
-.neurons {
-  /*transform: scale(0.5);
-  left: -120px;
-  position: relative;
-  top: -30px;*/
+  background-size: 1130%;
 }
 .centerIcon.filterIcon {
-  width: 41px;
-  height: 40px;
+  width: 25px;
+  height: 25px;
+  zoom: 6;
 }
-.neurons .filterIcon {
-  width: 41px;
-  height: 40px;
+.concepts .filterIcon {
+  width: 25px;
+  height: 25px;
 }
 .topMatches .filterIcon {
   width: 25px;

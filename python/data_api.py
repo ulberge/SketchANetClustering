@@ -47,7 +47,6 @@ def get_pieces_for_layer(img, acts, layer_meta, pct=1, thresh=None, thresh_pct=1
     img_pieces = []
     locations = []
     t_count = 0
-    random.seed(30)
     for y in range(0, h):
         for x in range(0, w):
             # skip some percentage

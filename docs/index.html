@@ -15,26 +15,29 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.12.0/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"
             crossorigin="anonymous"></script>
   </head>
   <body>
     <main>
       <div class="container">
         <h1>Visual Concepts in Sketch-A-Net</h1>
-        <div class="row" id="L1">
+        <div class="row" id="conv2">
           <h2>Layer 1</h2>
           <div class="col-md-3">
             <h3>Visual Concepts</h3>
-            <table class="neurons"></table>
+            <table class="concepts"></table>
           </div>
           <div class="col-md-3">
-            <h3>Neuron <span class="neuronId"></span></h3>
-            <div class="centerIcon filterIcon"></div>
+            <h3>Selected</h3>
             <div class="centerBarChart"></div>
+            <div class="centerIcon filterIcon"></div>
           </div>
           <div class="col-md-3">
             <h3>Top Matches</h3>
@@ -42,12 +45,12 @@
           </div>
           <div class="col-md-3">
             <h3>Example <span class="exampleId"></span></h3>
-            <div class="exampleIcon filterIcon"></div>
-            <div class="exampleBarChart"></div>
+            <div class="selectedExampleIcon filterIcon"></div>
+            <div class="selectedExampleBarChart"></div>
           </div>
         </div>
       </div>
-      <script src="/main.js"></script>
+      <script src="./main.js"></script>
     </main>
   </body>
 </html>
