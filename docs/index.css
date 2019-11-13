@@ -1,0 +1,55 @@
+body {
+  background: #ababab !important;
+}
+
+.filterIcon {
+  background-repeat: no-repeat;
+  display: inline-block;
+  border: none;
+}
+.neurons {
+  /*transform: scale(0.5);
+  left: -120px;
+  position: relative;
+  top: -30px;*/
+}
+.centerIcon.filterIcon {
+  width: 41px;
+  height: 40px;
+}
+.neurons .filterIcon {
+  width: 41px;
+  height: 40px;
+}
+.topMatches .filterIcon {
+  width: 25px;
+  height: 25px;
+}
+
+/* Apply this to your `table` element. */
+table {
+   border-collapse: collapse;
+}
+
+/* And this to your table's `td` elements. */
+table td {
+   padding: 0 1px;
+   margin: 0;
+}
+
+.topMatches button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.neurons button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  height: 40px;
+}
+
+img {
+  width: 100%;
+}
