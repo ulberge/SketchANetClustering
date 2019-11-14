@@ -5,13 +5,16 @@ body {
 .filterIcon {
   background-repeat: no-repeat;
   display: inline-block;
-  border: none;
-  background-size: 1130%;
+  border: 1px solid transparent;
+  background-size: 1210%;
 }
-.centerIcon.filterIcon {
+.filterIcon.selected {
+  border: 1px solid red;
+}
+.centerIcon.filterIcon, .selectedExampleIcon.filterIcon {
   width: 25px;
   height: 25px;
-  zoom: 6;
+  zoom: 4;
 }
 .concepts .filterIcon {
   width: 25px;
@@ -36,16 +39,30 @@ table td {
 .topMatches button {
   margin: 0;
   padding: 0;
-  border: 0;
 }
 
 .neurons button {
   margin: 0;
   padding: 0;
-  border: 0;
   height: 40px;
+}
+
+button {
+  outline: none;
 }
 
 img {
   width: 100%;
+}
+
+.largeIcons {
+  padding: 10px;
+}
+
+.largeIcons .centerIcon {
+  border: 1px solid #0000ff;
+}
+
+.largeIcons .selectedExampleIcon {
+  border: 1px solid #ff0000;
 }

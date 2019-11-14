@@ -13,6 +13,8 @@ import shutil
 from data_api import load_corpus
 
 
+# np.set_printoptions(threshold=np.inf)
+
 # extract the centers from a certain type of file
 def get_centers(from_path, idxs):
     # open from path
@@ -52,14 +54,17 @@ def get_imgs_and_acts(layer_name, sample_rate, pct, threshold, thresholdPct):
 
 
 def make_avg_img(imgs, alignType=None):
+    print('make_avg_img')
     if len(imgs) == 0:
         return None
 
     # get start img
-    avg_cluster_img = imgs[0].copy().squeeze()
-
+    # avg_cluster_img = imgs[0].copy().squeeze()
+    total_img = imgs[0].copy().squeeze()
+    total_img_norm = imgs[0].copy().squeeze()
     for i, img in enumerate(imgs[1:]):
-        avg_cluster_img_8U = np.uint8(avg_cluster_img * 255).squeeze()
+        total_img_norm = cv2.normalize(total_img, total_img_norm, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+        avg_cluster_img_8U = np.uint8(total_img_norm).squeeze()
         img_8U = np.uint8(img * 255).squeeze()
         # try to align img with avg
         img_aligned = img_8U
@@ -67,15 +72,21 @@ def make_avg_img(imgs, alignType=None):
         if alignType is not None:
             try:
                 img_aligned = alignImages(avg_cluster_img_8U, img_8U, alignType)
+                # total_img += img_aligned / 255.0
+                print('align')
             except cv2.error as e:
+                print('no align')
                 # cannot align
                 pass
 
         # take average of current and new image (weighted so that each image is averaged equally)
-        avg_cluster_img += img_aligned * (1.0 / (i + 1)) / 255
-        cv2.normalize(avg_cluster_img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+        # avg_cluster_img += img_aligned * (1.0 / (i + 1)) / 255
+        # cv2.normalize(avg_cluster_img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+        total_img += img_aligned / 255.0
 
-    return avg_cluster_img
+    total_img = cv2.normalize(total_img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+
+    return total_img
 
 
 def alignImages(im1_gray, im2_gray, alignType):
@@ -230,6 +241,7 @@ def generate_data(centers, imgs, acts, path, k, num_matches=100):
         matches_acts = acts_dict[i]
         matches_img = imgs_dict[i]
         target = center
+        # print('target', center)
 
         # get the error for all the acts matching this cluster and sort
         print('Start calculating error')
@@ -284,7 +296,7 @@ def generate_data(centers, imgs, acts, path, k, num_matches=100):
     # save centers to text file
     centers_data_file = open(path + 'centers_data.txt', 'w')
     for center in centers:
-        item = np.array2string(match.numpy(), separator=',')
+        item = np.array2string(center, separator=',')
         centers_data_file.write(item + '\n')
 
     # save top match avg and aligned avg images pngs
@@ -328,18 +340,6 @@ def combine_centers2(path):
         to_file.write(','.join(str(center)) + '\n')
 
     return all_centers
-
-
-def load_layer2():
-    # params for L2
-    layer_name = 'conv2'
-    sample_rate = 2000
-    pct = 0.02
-    threshold = 0.03
-    thresholdPct = 0.1
-
-    imgs, acts = get_imgs_and_acts(layer_name, sample_rate, pct, threshold, thresholdPct)
-    return imgs, acts
 
 
 def remove_old_files(path):
@@ -414,9 +414,41 @@ def get_top_image_paths(old_path, idxs):
 
 def finalize(path, old_path):
     # identify good centers from runs
+    # center_allstars = [
+    #     ['cluster_t3676242_k=8_n=146', [0, 1]],
+    #     ['cluster_t3685611_k=8_n=119', [3, 4]],
+    # ]
+    # center_allstars = [
+    #     ['cluster_t3695042_k=80_n=11863', []],
+    #     ['cluster_t3697702_k=80_n=11824', [15]],
+
+    #     ['cluster_t3702407_k=100_n=11794', [74, 31, 2, 43]],
+    #     ['cluster_t3705127_k=100_n=11842', [75]],
+    #     ['cluster_t3707861_k=140_n=11776', [9]],
+
+    #     ['cluster_t3710879_k=80_n=11871', []],
+    #     ['cluster_t3713317_k=80_n=11953', []],
+    #     ['cluster_t3715715_k=80_n=11805', [72]],
+
+    #     ['cluster_t3718061_k=80_n=11653', [24, 52]],
+    #     ['cluster_t3720467_k=80_n=11875', [20, 58, 42, 6, 71]],
+    #     ['cluster_t3722905_k=80_n=11933', [55, 79, 10]],
+    # ]
     center_allstars = [
-        ['cluster_t3676242_k=8_n=146', [0, 1]],
-        ['cluster_t3676157_k=8_n=161', [3, 4]],
+        ['cluster_t3722905_k=80_n=11933', []],
+        ['cluster_t3720467_k=80_n=11875', [15]],
+        ['cluster_t3718061_k=80_n=11653', [74, 31, 2, 43]],
+
+        ['cluster_t3715715_k=80_n=11805', [75]],
+        ['cluster_t3713317_k=80_n=11953', [9]],
+        ['cluster_t3710879_k=80_n=11871', []],
+
+        ['cluster_t3707861_k=140_n=11776', []],
+        ['cluster_t3705127_k=100_n=11842', [72]],
+        ['cluster_t3702407_k=100_n=11794', [24, 52]],
+
+        ['cluster_t3697702_k=80_n=11824', [20, 58, 42, 6, 71]],
+        ['cluster_t3695042_k=80_n=11863', [55, 79, 10]],
     ]
 
     # Collect centers and top match data into files
@@ -462,29 +494,42 @@ def finalize(path, old_path):
     save_img_groups(all_avg_imgs, path + 'top_matches_avg_comp')
 
 
+def load_layer2():
+    # params for L2
+    layer_name = 'conv2'
+    sample_rate = 25
+    pct = 0.02
+    threshold = 0.03
+    thresholdPct = 0.1
+
+    imgs, acts = get_imgs_and_acts(layer_name, sample_rate, pct, threshold, thresholdPct)
+    return imgs, acts
+
+
 if __name__ == '__main__':
-    path = '../docs/data/conv2/'
-    old_path = '../results/conv2/'
-    remove_old_files(path)
-    finalize(path, old_path)
+    # path = '../docs/data/conv2/'
+    # old_path = '../results/conv2/'
+    # remove_old_files(path)
+    # finalize(path, old_path)
+
+
     # centers = combine_centers2(old_path)
 
+    for k in [80, 80, 80, 80, 80, 80]:
+    # for k in [10]:
+        ts = str(int(time.time()))[3:]
+        imgs, acts = load_layer2()
+        path = '../results/conv2/cluster_t' + ts + '_k=' + str(k) + '_n=' + str(len(acts)) + '/'
 
-    # centers = read_centers(path + 'centers.txt')
-    # ts = str(int(time.time()))[3:]
-    # k = 8
-    # imgs, acts = load_layer2()
-    # path = '../results/conv2/cluster_t' + ts + '_k=' + str(k) + '_n=' + str(len(acts)) + '/'
+        try:
+            os.mkdir(path)
+        except OSError:
+            print('Creation of the directory %s failed' % path)
+        else:
+            print('Successfully created the directory %s ' % path)
 
-    # try:
-    #     os.mkdir(path)
-    # except OSError:
-    #     print('Creation of the directory %s failed' % path)
-    # else:
-    #     print('Successfully created the directory %s ' % path)
-
-    # centers = []
-    # generate_data(centers, imgs, acts, path, k, num_matches=10)
+        centers = []
+        generate_data(centers, imgs, acts, path, k, num_matches=100)
 
 
 

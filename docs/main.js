@@ -101,6 +101,7 @@
   // }
 
   function drawActivationGraph(el, data) {
+    const colors = ['#ff0000', '#0000ff'];
     const color = '#000';
     const margin = {top: 10, right: 10, bottom: 10, left: 10};
     const width = Math.min(data.length * 100, el.offsetWidth - margin.left - margin.right) + margin.left + margin.right;
@@ -112,7 +113,7 @@
       .padding(0.1);
 
     const y = d3.scaleLinear()
-      .domain(d3.extent(data, d => d.v)).nice()
+      .domain(d3.extent(data, d => Math.max(d.v[0], d.v[1]))).nice()
       .range([height - margin.bottom, margin.top]);
 
     const xAxis = g => g
@@ -132,12 +133,21 @@
 
     const bars = svg.append('g').selectAll('.bar').data(data).enter();
 
-    bars.append('rect')
-        .attr('fill', color)
-        .attr('x', d => x(d.i))
-        .attr('y', d => y(d.v))
-        .attr('height', d => y(0) - y(d.v ? d.v : 0))
-        .attr('width', x.bandwidth());
+    // bars.append('rect')
+    //     .attr('fill', color)
+    //     .attr('x', d => x(d.i))
+    //     .attr('y', d => y(d.v))
+    //     .attr('height', d => y(0) - y(d.v ? d.v : 0))
+    //     .attr('width', x.bandwidth());
+    const barCount = data[0].v.length;
+    for (let i = 0; i < barCount; i++) {
+      bars.append('rect')
+        .attr('fill', colors[i])
+        .attr('x', d => x(d.i) + (i * (x.bandwidth() / barCount)))
+        .attr('y', d => y(d.v[i] ? d.v[i] : 0))
+        .attr('height', d => y(0) - y(d.v[i] ? d.v[i] : 0))
+        .attr('width', x.bandwidth() / barCount);
+    }
 
     const xAxisItems = svg.append('g')
           .style('font-size', '8px')
@@ -152,100 +162,6 @@
     return svg.node();
   }
 
-  // function drawConcepts(layerContainer) {
-  //   // draw all the concepts as icons for this layer as buttons in a grid
-  //   const conceptsContainer = layerContainer.find('.concepts');
-  //   drawSpriteAsButtonGrid(conceptsContainer, './public/imgs/conv2/top_matches_avg.png', 49, 3, 10, 60);
-  // }
-
-  // function drawSelectedConcept(layerContainer) {
-  //   // draw a larger version of the selected concept's icon
-  //   // use D3 to render its activations
-  //   const data = [10, 20, 40, 4].map((v, i) => {
-  //     return { v, i }
-  //   });
-  //   drawActivationGraph(layerContainer.find('.centerBarChart')[0], data);
-  // }
-
-  // function drawTopMatches() {
-  //   // draw the top matches as icons in a grid
-  // }
-
-  // function drawSelectedTopMatch() {
-  //   // draw the activations for the selected top match
-  // }
-
-  // drawConcepts($('#L1'));
-  // drawSelectedConcept($('#L1'));
-
-  // const layer = 'L1';
-  // const layerContainer = $('#' + layer);
-  // const neuronsContainer = layerContainer.find('.neurons');
-  // const topMatchesContainer = layerContainer.find('.topMatches');
-  // const neurons = [1, 2, 3, 4, 5, ];
-  // const rowSize = 5;
-  // const layerIndex = 0;
-
-  // function getVCIconStyle(i) {
-  //   const rowSize = 10;
-  //   const x = (-3 - ((i % rowSize) * (49)));
-  //   const y = (-3 - (Math.floor(i / rowSize) * (49)));
-  //   const style = 'background-image: url(\'./data/conv2/top_matches_avg.png\'); background-position: ' + x + 'px ' + y + 'px;';
-  //   return style;
-  // }
-
-  // function selectNeuron(id, i) {
-  //   console.log('open ' + id);
-  //   layerContainer.find('.neuronId').html(i);
-
-  //   // Show larger version of icon and bar chart
-  //   const iconStyle = getVCIconStyle(i);
-  //   layerContainer.find('.centerIcon')[0].style = iconStyle;
-  //   const barChartContainer = layerContainer.find('.centerBarChart');
-  //   barChartContainer.empty();
-  //   const barChartFile  = './public/imgs/' + layer + '/charts_0' + (i < 100 ? '0' : '') + (i < 10 ? '0' : '') + i + '.png';
-  //   barChartContainer.append('<img src="' + barChartFile + '"/>')
-
-  //   // Show top matches
-  //   topMatchesContainer.empty();
-  //   const imgFile  = 'top_matches_0' + (i < 100 ? '0' : '') + (i < 10 ? '0' : '') + i + '.png';
-  //   const rowSize = 10;
-  //   for (let i = 0; i < 100; i += 1) {
-  //     if ((i % rowSize) === 0) {
-  //       topMatchesContainer.append('<tr></tr>');
-  //     }
-  //     const row = topMatchesContainer.find('tr:last');
-  //     const x = -3 + (i * 50);
-  //     const y = -3 + (i * 50);
-  //     const style = 'background-image: url("./public/imgs/' + layer + '/' + imgFile + '"); background-position: ' + x + 'px ' + y + 'px;';
-  //     const ex_id = id + '_ex' + i;
-  //     row.append('<td><button id="' + ex_id + '" class="filterIcon" style="' + style + '"></button></td>');
-
-  //     topMatchesContainer.find('#' + ex_id).click(() => {
-  //       console.log('open ' + ex_id);
-  //     });
-  //   }
-  // }
-
-  // for (let i = 0; i < 26; i += 1) {
-  //   // add icon for this neuron
-  //   if ((i % rowSize) === 0) {
-  //     neuronsContainer.append('<tr></tr>');
-  //   }
-  //   const row = neuronsContainer.find('tr:last');
-  //   const id = 'layer' + layerIndex + '_n' + i;
-  //   const style = getVCIconStyle(i);
-
-  //   row.append('<td><button id="' + id + '" class="filterIcon" style="' + style + '"></button></td>');
-
-  //   neuronsContainer.find('#' + id).click(() => {
-  //     selectNeuron(id, i);
-  //   });
-  // }
-
-  // neuronsContainer.find('button:first').click();
-  // topMatchesContainer.find('button:first').click();
-
   async function getCentersData(fileName) {
     return new Promise((resolve) => {
       $.get(fileName, function(data) {
@@ -259,7 +175,8 @@
   async function getTopMatchesData(fileName) {
     return new Promise((resolve) => {
       $.get(fileName, function(data) {
-        const topMatchesData = data.split(':').map(g => g.split('\n').map(v => v.split(',')));
+        const topMatchesData = data.split(':').map(g => g.trim().split('\n').map(v => v.split(',')));
+        console.log(topMatchesData);
         topMatchesData.pop();
         resolve(topMatchesData);
       });
@@ -271,22 +188,35 @@
     const container = $('#' + layer);
     const path = './data/' + layer + '/';
     const sprite = path + 'top_matches_avg.png';
-    const centersData = await getCentersData(path + 'centers_data.txt');
-    const topMatchesData = await getTopMatchesData(path + 'top_matches_data.txt');
+    let centersData = await getCentersData(path + 'centers_data.txt');
+    let topMatchesData = await getTopMatchesData(path + 'top_matches_data.txt');
     const iconSize = 28;
     const padding = 2;
     const rowSize = 10;
-    const numIcons = 4;
+    const displayRowSize = 4;
+    const displayRowSizeMatches = 10;
+
+    const sortIdx = [
+      2, 1, 15, 5,
+      14, 10, 12, 8,
+      16, 13, 11, 9,
+      6, 4, 3, 0,
+      7, 17
+    ];
+    centersData = centersData.map((d, i) => [sortIdx.indexOf(i), d]).sort((a, b) => a[0] > b[0] ? -1 : 1).map(d => d[1]);
+    topMatchesData = topMatchesData.map((d, i) => [i, d]).sort((a, b) => sortIdx[a[0]] > sortIdx[b[0]] ? -1 : 1).map(d => d[1]);
 
     const conceptsContainer = container.find('.concepts');
-    for (let i = 0; i < numIcons; i += 1) {
-      if ((i % rowSize) === 0) {
+    // for (let k = 0; k < sortIdx.length; k += 1) {
+    //   const i = sortIdx[k];
+    for (let i = 0; i < centersData.length; i += 1) {
+      if ((i % displayRowSize) === 0) {
         conceptsContainer.append('<tr></tr>');
       }
       const row = conceptsContainer.find('tr:last');
       // get the position in the sprite
-      const x = -padding - ((i % rowSize) * iconSize);
-      const y = -padding - (Math.floor(i / rowSize) * iconSize);
+      const x = -padding - ((sortIdx[i] % rowSize) * iconSize);
+      const y = -padding - (Math.floor(sortIdx[i] / rowSize) * iconSize);
       let style = 'background-image: url(\'' + sprite + '\');';
       style += 'background-position: ' + x + 'px ' + y + 'px;';
       const id = name + '_button_' + i;
@@ -300,19 +230,18 @@
         conceptsContainer.find('.conceptIcon').removeClass('selected').eq(i).addClass('selected');
 
         // Show bar chart for average activation
-        const data_f = centersData[i].map((v, i) => {
+        const data_f_0 = centersData[i].map((v, i) => {
           return { v: parseFloat(v), i };
         });
-        container.find('.centerBarChart').empty();
-        console.log(data_f);
-        drawActivationGraph(container.find('.centerBarChart')[0], data_f);
+        // container.find('.centerBarChart').empty();
+        // drawActivationGraph(container.find('.centerBarChart')[0], data_f);
 
         // show top matches
         const matchesContainer = container.find('.topMatches');
         matchesContainer.empty();
         const sprite = path + 'top_matches_' + (i < 100 ? '0' : '') + (i < 10 ? '0' : '') + i + '.png';
-        for (let j = 0; j < 100; j += 1) {
-          if ((j % rowSize) === 0) {
+        for (let j = 0; j < topMatchesData[i].length; j += 1) {
+          if ((j % displayRowSizeMatches) === 0) {
             matchesContainer.append('<tr></tr>');
           }
           const row = matchesContainer.find('tr:last');
@@ -328,15 +257,15 @@
           $('#' + id).click(() => {
             // Show top match avg image for visual concept
             container.find('.selectedExampleIcon')[0].style = style;
-            conceptsContainer.find('.exampleIcon').removeClass('selected');
-            conceptsContainer.find('.exampleIcon').removeClass('selected').eq(i).addClass('selected');
+            matchesContainer.find('.exampleIcon').removeClass('selected');
+            matchesContainer.find('.exampleIcon').removeClass('selected').eq(j).addClass('selected');
 
             // Show bar chart for average activation
-            const data_f = topMatchesData[i][j].map((v, i) => {
-              return { v: parseFloat(v), i };
+            const data_f_1 = topMatchesData[i][j].map((v, i) => {
+              return { v: [parseFloat(v), data_f_0[i].v], i };
             });
             container.find('.selectedExampleBarChart').empty();
-            drawActivationGraph(container.find('.selectedExampleBarChart')[0], data_f);
+            drawActivationGraph(container.find('.selectedExampleBarChart')[0], data_f_1);
           });
         }
 
