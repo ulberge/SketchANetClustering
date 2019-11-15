@@ -39,6 +39,7 @@ def get_pieces_for_layer(img, acts, layer_meta, pct=1, thresh=None, thresh_pct=1
     '''
     layer_name, stride, f_size, padding = layer_meta
 
+    img_f = img
     if padding > 0:
         img_f = cv2.copyMakeBorder(img, padding, padding, padding, padding, cv2.BORDER_CONSTANT, value=[0, 0, 0])
 
@@ -58,7 +59,7 @@ def get_pieces_for_layer(img, acts, layer_meta, pct=1, thresh=None, thresh_pct=1
             x_end = x_start + f_size
             y_start = y * stride
             y_end = y_start + f_size
-            img_piece = img[y_start: y_end, x_start: x_end]
+            img_piece = img_f[y_start: y_end, x_start: x_end]
 
             # skip if threshold for empty images not met
             if thresh is not None:

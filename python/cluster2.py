@@ -53,7 +53,7 @@ def get_imgs_and_acts(layer_name, sample_rate, pct, threshold, thresholdPct):
     return imgs, acts
 
 
-def make_avg_img(imgs, alignType=None):
+def make_avg_img_align(imgs, alignType=None, keepNoAlign=True):
     print('make_avg_img')
     if len(imgs) == 0:
         return None
@@ -72,7 +72,8 @@ def make_avg_img(imgs, alignType=None):
         if alignType is not None:
             try:
                 img_aligned = alignImages(avg_cluster_img_8U, img_8U, alignType)
-                # total_img += img_aligned / 255.0
+                if not keepNoAlign:
+                    total_img += img_aligned / 255.0
                 print('align')
             except cv2.error as e:
                 print('no align')
@@ -82,7 +83,24 @@ def make_avg_img(imgs, alignType=None):
         # take average of current and new image (weighted so that each image is averaged equally)
         # avg_cluster_img += img_aligned * (1.0 / (i + 1)) / 255
         # cv2.normalize(avg_cluster_img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
-        total_img += img_aligned / 255.0
+        if keepNoAlign:
+            total_img += img_aligned / 255.0
+
+    total_img = cv2.normalize(total_img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+
+    return total_img
+
+
+def make_avg_img(imgs, alignType=None):
+    print('make_avg_img')
+    if len(imgs) == 0:
+        return None
+
+    # get start img
+    # avg_cluster_img = imgs[0].copy().squeeze()
+    total_img = imgs[0].copy()
+    for i, img in enumerate(imgs[1:]):
+        total_img += img
 
     total_img = cv2.normalize(total_img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
@@ -107,11 +125,13 @@ def alignImages(im1_gray, im2_gray, alignType):
         warp_matrix = np.eye(2, 3, dtype=np.float32)
 
     # Specify the number of iterations.
-    number_of_iterations = 5000
+    # number_of_iterations = 5000
+    number_of_iterations = 50
 
     # Specify the threshold of the increment
     # in the correlation coefficient between two iterations
-    termination_eps = 1e-10
+    # termination_eps = 1e-10
+    termination_eps = 0.001
 
     # Define termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations,  termination_eps)
@@ -274,13 +294,15 @@ def generate_data(centers, imgs, acts, path, k, num_matches=100):
         # avg_imgs_by_center.append([avg_img, avg_img_align0, avg_img_align1, avg_img_align2, avg_img_align3])
 
         avg_img = make_avg_img(top_matches)
-        avg_img_align0 = make_avg_img(top_matches, alignType=cv2.MOTION_EUCLIDEAN)
-        avg_imgs_by_center.append([avg_img, avg_img_align0])
+        avg_img_align0a = make_avg_img_align(top_matches, alignType=cv2.MOTION_EUCLIDEAN, keepNoAlign=False)
+        avg_img_align0b = make_avg_img_align(top_matches, alignType=cv2.MOTION_EUCLIDEAN, keepNoAlign=True)
+        avg_imgs_by_center.append([avg_img, avg_img_align0a, avg_img_align0b])
         print('Finished making avg images')
 
         print('Start saving images')
         save_imgs([avg_img], path + 'top_matches_avg_' + ('0' if i < 10 else '') + ('0' if i < 100 else '') + str(i), num_cols=1, pad=0)
-        save_imgs([avg_img_align0], path + 'top_matches_avg_align_' + ('0' if i < 10 else '') + ('0' if i < 100 else '') + str(i), num_cols=1, pad=0)
+        save_imgs([avg_img_align0a], path + 'top_matches_avg_align_' + ('0' if i < 10 else '') + ('0' if i < 100 else '') + str(i), num_cols=1, pad=0)
+        save_imgs([avg_img_align0b], path + 'top_matches_avg_align_only_' + ('0' if i < 10 else '') + ('0' if i < 100 else '') + str(i), num_cols=1, pad=0)
         # Save the top 100 img for this cluster
         save_imgs(top_matches, path + 'top_matches_' + ('0' if i < 10 else '') + ('0' if i < 100 else '') + str(i))
         print('Finished saving images')
@@ -300,7 +322,8 @@ def generate_data(centers, imgs, acts, path, k, num_matches=100):
         centers_data_file.write(item + '\n')
 
     # save top match avg and aligned avg images pngs
-    save_imgs([i[1] for i in avg_imgs_by_center], path + 'top_matches_avg')
+    save_imgs([i[2] for i in avg_imgs_by_center], path + 'top_matches_avg_align')
+    save_imgs([i[1] for i in avg_imgs_by_center], path + 'top_matches_avg_align_only')
     save_img_groups(avg_imgs_by_center, path + 'top_matches_avg_comp')
 
 
@@ -506,6 +529,18 @@ def load_layer2():
     return imgs, acts
 
 
+def load_layer3():
+    # params for L3
+    layer_name = 'conv3'
+    sample_rate = 20
+    pct = 0.07
+    threshold = 0.05
+    thresholdPct = 0.1
+
+    imgs, acts = get_imgs_and_acts(layer_name, sample_rate, pct, threshold, thresholdPct)
+    return imgs, acts
+
+
 if __name__ == '__main__':
     # path = '../docs/data/conv2/'
     # old_path = '../results/conv2/'
@@ -515,7 +550,7 @@ if __name__ == '__main__':
 
     # centers = combine_centers2(old_path)
 
-    for k in [80, 80, 80, 80, 80, 80]:
+    for k in [80, 80, 80, 80, 80, 80, 80, 80, 100, 100, 100]:
     # for k in [10]:
         ts = str(int(time.time()))[3:]
         imgs, acts = load_layer2()
@@ -530,6 +565,23 @@ if __name__ == '__main__':
 
         centers = []
         generate_data(centers, imgs, acts, path, k, num_matches=100)
+
+
+    # for k in [80, 80, 80, 100, 100, 100, 120, 120, 120, 160, 200, 240, 300]:
+    # # for k in [10]:
+    #     ts = str(int(time.time()))[3:]
+    #     imgs, acts = load_layer3()
+    #     path = '../results/conv3/cluster_t' + ts + '_k=' + str(k) + '_n=' + str(len(acts)) + '/'
+
+    #     try:
+    #         os.mkdir(path)
+    #     except OSError:
+    #         print('Creation of the directory %s failed' % path)
+    #     else:
+    #         print('Successfully created the directory %s ' % path)
+
+    #     centers = []
+    #     generate_data(centers, imgs, acts, path, k, num_matches=100)
 
 
 
