@@ -33,7 +33,6 @@
       }
     }
     console.log(currentMatchIndex);
-    e.preventDefault();
   };
 
   function drawActivationGraph(el, data) {
