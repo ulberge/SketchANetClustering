@@ -1,104 +1,40 @@
 (function() {
 
-  function drawSpriteAsButtonGrid(name, container, sprite, iconSize, padding, rowSize, numIcons) {
-  }
+  let currentMatchIndex = [0, 0, 0]; // layer and top match index
 
-  function selectConcept(container, name, id, style) {
-    // Show larger version of icon and bar chart
-    container.find('.centerIcon')[0].style = style;
-    // const barChartContainer = layerContainer.find('.centerBarChart');
-    // barChartContainer.empty();
-    // const barChartFile  = './public/imgs/' + layer + '/charts_0' + (i < 100 ? '0' : '') + (i < 10 ? '0' : '') + i + '.png';
-    // barChartContainer.append('<img src="' + barChartFile + '"/>')
+  document.onkeydown = e => {
+    const maxTopMatch = $('.topMatches').eq(currentMatchIndex[0]).find('button').length;
+    const maxConcept = $('.concepts').eq(currentMatchIndex[0]).find('button').length;
+    if (e.key === 'a') {
+      // a
+      if (currentMatchIndex[2] > 0) {
+        currentMatchIndex[2] -= 1;
+        $('.topMatches').eq(currentMatchIndex[0]).find('button').eq(currentMatchIndex[2]).click();
+      }
+    } else if (e.key === 'd') {
+      // d
+      if (currentMatchIndex[2] < maxTopMatch - 1) {
+        currentMatchIndex[2] += 1;
+        $('.topMatches').eq(currentMatchIndex[0]).find('button').eq(currentMatchIndex[2]).click();
+      }
+    }
 
-    // // Show top matches
-    // topMatchesContainer.empty();
-    // const imgFile  = 'top_matches_0' + (i < 100 ? '0' : '') + (i < 10 ? '0' : '') + i + '.png';
-    // const rowSize = 10;
-    // for (let i = 0; i < 100; i += 1) {
-    //   if ((i % rowSize) === 0) {
-    //     topMatchesContainer.append('<tr></tr>');
-    //   }
-    //   const row = topMatchesContainer.find('tr:last');
-    //   const x = -3 + (i * 50);
-    //   const y = -3 + (i * 50);
-    //   const style = 'background-image: url("./public/imgs/' + layer + '/' + imgFile + '"); background-position: ' + x + 'px ' + y + 'px;';
-    //   const ex_id = id + '_ex' + i;
-    //   row.append('<td><button id="' + ex_id + '" class="filterIcon" style="' + style + '"></button></td>');
-
-    //   topMatchesContainer.find('#' + ex_id).click(() => {
-    //     console.log('open ' + ex_id);
-    //   });
-    // }
-  }
-
-  // function drawActivationGraph(el, data) {
-  //   var margin = {top: 40, right: 20, bottom: 30, left: 40},
-  //       width = 960 - margin.left - margin.right,
-  //       height = 500 - margin.top - margin.bottom;
-
-  //   var formatPercent = d3.format(".0%");
-
-  //   var x = d3.scaleBand()
-  //       .range([0, width], .1)
-  //       .padding(0.1);;
-
-  //   var y = d3.scaleLinear()
-  //       .range([height, 0]);
-
-  //   var xAxis = d3.svg.axis()
-  //       .scale(x)
-  //       .orient("bottom");
-
-  //   var yAxis = d3.svg.axis()
-  //       .scale(y)
-  //       .orient("left")
-  //       .tickFormat(formatPercent);
-
-  //   var tip = d3.tip()
-  //     .attr('class', 'd3-tip')
-  //     .offset([-10, 0])
-  //     .html(function(d) {
-  //       return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
-  //     });
-
-  //   var svg = d3.select("body").append("svg")
-  //       .attr("width", width + margin.left + margin.right)
-  //       .attr("height", height + margin.top + margin.bottom)
-  //     .append("g")
-  //       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  //   svg.call(tip);
-
-  //   x.domain(data.map(function(d) { return d.letter; }));
-  //   y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-  //   svg.append("g")
-  //       .attr("class", "x axis")
-  //       .attr("transform", "translate(0," + height + ")")
-  //       .call(xAxis);
-
-  //   svg.append("g")
-  //       .attr("class", "y axis")
-  //       .call(yAxis)
-  //     .append("text")
-  //       .attr("transform", "rotate(-90)")
-  //       .attr("y", 6)
-  //       .attr("dy", ".71em")
-  //       .style("text-anchor", "end")
-  //       .text("Frequency");
-
-  //   svg.selectAll(".bar")
-  //       .data(data)
-  //     .enter().append("rect")
-  //       .attr("class", "bar")
-  //       .attr("x", function(d) { return x(d.letter); })
-  //       .attr("width", x.rangeBand())
-  //       .attr("y", function(d) { return y(d.frequency); })
-  //       .attr("height", function(d) { return height - y(d.frequency); })
-  //       .on('mouseover', tip.show)
-  //       .on('mouseout', tip.hide);
-  // }
+    if (e.key === 'w') {
+        // w
+      if (currentMatchIndex[1] > 0) {
+        currentMatchIndex[1] -= 1;
+        $('.concepts').eq(currentMatchIndex[0]).find('button').eq(currentMatchIndex[1]).click();
+      }
+    } else if (e.key === 's') {
+        // s
+      if (currentMatchIndex[1] < maxConcept - 1) {
+        currentMatchIndex[1] += 1;
+        $('.concepts').eq(currentMatchIndex[0]).find('button').eq(currentMatchIndex[1]).click();
+      }
+    }
+    console.log(currentMatchIndex);
+    e.preventDefault();
+  };
 
   function drawActivationGraph(el, data) {
     const colors = ['#ff0000', '#0000ff'];
@@ -113,7 +49,7 @@
       .padding(0.1);
 
     const y = d3.scaleLinear()
-      .domain(d3.extent(data, d => Math.max(d.v[0], d.v[1]))).nice()
+      .domain(d3.extent(data, d => d.v[1] * 1.4)).nice()
       .range([height - margin.bottom, margin.top]);
 
     const xAxis = g => g
@@ -165,7 +101,7 @@
   async function getCentersData(fileName) {
     return new Promise((resolve) => {
       $.get(fileName, function(data) {
-        const centersData = data.split('\n').map(v => v.split(','));
+        const centersData = data.split('\n').map(acts => acts.split(',').map(v => v < 0 ? 0 : v));
         centersData.pop();
         resolve(centersData);
       });
@@ -175,106 +111,107 @@
   async function getTopMatchesData(fileName) {
     return new Promise((resolve) => {
       $.get(fileName, function(data) {
-        const topMatchesData = data.split(':').map(g => g.trim().split('\n').map(v => v.split(',')));
-        console.log(topMatchesData);
+        const topMatchesData = data.split(':').map(g => g.trim().split('\n').map(acts => acts.split(',').map(v => v < 0 ? 0 : v)));
         topMatchesData.pop();
+        console.log(topMatchesData);
         resolve(topMatchesData);
       });
     });
   }
 
-  async function loadLayer(i) {
-    const layer = 'conv' + i;
+  async function loadLayer(layerIndex) {
+    const layer = 'conv' + layerIndex;
     const container = $('#' + layer);
     const path = './data/' + layer + '/';
-    const sprite = path + 'top_matches_avg.png';
-    let centersData = await getCentersData(path + 'centers_data.txt');
-    let topMatchesData = await getTopMatchesData(path + 'top_matches_data.txt');
+    const sprite = path + 'top_matches_avg.png?' + Date.now(); // added date to break cache because of flask problem...
+    let centersData = await getCentersData(path + 'centers_data.txt?' + Date.now());
+    let topMatchesData = await getTopMatchesData(path + 'top_matches_data.txt?' + Date.now());
     const iconSize = 28;
     const padding = 2;
     const rowSize = 10;
     const displayRowSize = 4;
     const displayRowSizeMatches = 10;
 
-    const sortIdx = [
-      2, 1, 15, 5,
-      14, 10, 12, 8,
-      16, 13, 11, 9,
-      6, 4, 3, 0,
-      7, 17
+    const rows = [
+      [12, 14, 13, 25, 20, 26], // verts and hors
+      [30, 27, 29, 15, 17, 16], // diags
+      [28, 19, 3, 6, 7, 10], // fields
+      [21, 11, 8, 18, 24, 22, 23, 2], // corners
+      [0, 4, 1, 7, 5] // ends
     ];
-    centersData = centersData.map((d, i) => [sortIdx.indexOf(i), d]).sort((a, b) => a[0] > b[0] ? -1 : 1).map(d => d[1]);
-    topMatchesData = topMatchesData.map((d, i) => [i, d]).sort((a, b) => sortIdx[a[0]] > sortIdx[b[0]] ? -1 : 1).map(d => d[1]);
 
     const conceptsContainer = container.find('.concepts');
-    // for (let k = 0; k < sortIdx.length; k += 1) {
-    //   const i = sortIdx[k];
-    for (let i = 0; i < centersData.length; i += 1) {
-      if ((i % displayRowSize) === 0) {
-        conceptsContainer.append('<tr></tr>');
-      }
-      const row = conceptsContainer.find('tr:last');
-      // get the position in the sprite
-      const x = -padding - ((sortIdx[i] % rowSize) * iconSize);
-      const y = -padding - (Math.floor(sortIdx[i] / rowSize) * iconSize);
-      let style = 'background-image: url(\'' + sprite + '\');';
-      style += 'background-position: ' + x + 'px ' + y + 'px;';
-      const id = name + '_button_' + i;
-      const elStr = '<td><button id="' + id + '" class="conceptIcon filterIcon" style="' + style + '"></button></td>';
-      row.append(elStr);
+    let count = -1;
+    rows.forEach(row => {
+      conceptsContainer.append('<tr></tr>');
+      row.forEach(i => {
+        count += 1;
+        const displayIndex = count;
+        const row = conceptsContainer.find('tr:last');
+        // get the position in the sprite
+        const x = -padding - ((i % rowSize) * iconSize);
+        const y = -padding - (Math.floor(i / rowSize) * iconSize);
+        let style = 'background-image: url(\'' + sprite + '\');';
+        style += 'background-position: ' + x + 'px ' + y + 'px;';
+        const id = name + '_button_' + displayIndex;
+        const elStr = '<td><button id="' + id + '" class="conceptIcon filterIcon" style="' + style + '"></button></td>';
+        row.append(elStr);
 
-      $('#' + id).click(() => {
-        // Show top match avg image for visual concept
-        container.find('.centerIcon')[0].style = style;
-        conceptsContainer.find('.conceptIcon').removeClass('selected');
-        conceptsContainer.find('.conceptIcon').removeClass('selected').eq(i).addClass('selected');
+        $('#' + id).click(() => {
+          currentMatchIndex = [(layerIndex - 2), displayIndex, 0];
+          console.log(id, displayIndex, i);
+          // Show top match avg image for visual concept
+          container.find('.centerIcon')[0].style = style;
+          conceptsContainer.find('.conceptIcon').removeClass('selected');
+          conceptsContainer.find('.conceptIcon').removeClass('selected').eq(displayIndex).addClass('selected');
 
-        // Show bar chart for average activation
-        const data_f_0 = centersData[i].map((v, i) => {
-          return { v: parseFloat(v), i };
-        });
-        // container.find('.centerBarChart').empty();
-        // drawActivationGraph(container.find('.centerBarChart')[0], data_f);
-
-        // show top matches
-        const matchesContainer = container.find('.topMatches');
-        matchesContainer.empty();
-        const sprite = path + 'top_matches_' + (i < 100 ? '0' : '') + (i < 10 ? '0' : '') + i + '.png';
-        for (let j = 0; j < topMatchesData[i].length; j += 1) {
-          if ((j % displayRowSizeMatches) === 0) {
-            matchesContainer.append('<tr></tr>');
-          }
-          const row = matchesContainer.find('tr:last');
-          // get the position in the sprite
-          const x = -padding - ((j % rowSize) * iconSize);
-          const y = -padding - (Math.floor(j / rowSize) * iconSize);
-          let style = 'background-image: url(\'' + sprite + '\');';
-          style += 'background-position: ' + x + 'px ' + y + 'px;';
-          const id = name + '_button_' + i + '_' + j;
-          const elStr = '<td><button id="' + id + '" class="exampleIcon filterIcon" style="' + style + '"></button></td>';
-          row.append(elStr);
-
-          $('#' + id).click(() => {
-            // Show top match avg image for visual concept
-            container.find('.selectedExampleIcon')[0].style = style;
-            matchesContainer.find('.exampleIcon').removeClass('selected');
-            matchesContainer.find('.exampleIcon').removeClass('selected').eq(j).addClass('selected');
-
-            // Show bar chart for average activation
-            const data_f_1 = topMatchesData[i][j].map((v, i) => {
-              return { v: [parseFloat(v), data_f_0[i].v], i };
-            });
-            container.find('.selectedExampleBarChart').empty();
-            drawActivationGraph(container.find('.selectedExampleBarChart')[0], data_f_1);
+          // Show bar chart for average activation
+          const data_f_0 = centersData[i].map((v, k) => {
+            return { v: parseFloat(v), i: k };
           });
-        }
+          // container.find('.centerBarChart').empty();
+          // drawActivationGraph(container.find('.centerBarChart')[0], data_f);
 
-        matchesContainer.find('button:first').click();
+          // show top matches
+          const matchesContainer = container.find('.topMatches');
+          matchesContainer.empty();
+          const sprite = path + 'top_matches_' + (i < 100 ? '0' : '') + (i < 10 ? '0' : '') + i + '.png?' + Date.now();
+          for (let j = 0; j < topMatchesData[i].length; j += 1) {
+            if ((j % displayRowSizeMatches) === 0) {
+              matchesContainer.append('<tr></tr>');
+            }
+            const row = matchesContainer.find('tr:last');
+            // get the position in the sprite
+            const x = -padding - ((j % rowSize) * iconSize);
+            const y = -padding - (Math.floor(j / rowSize) * iconSize);
+            let style = 'background-image: url(\'' + sprite + '\');';
+            style += 'background-position: ' + x + 'px ' + y + 'px;';
+            const id = name + '_button_' + displayIndex + '_' + j;
+            const elStr = '<td><button id="' + id + '" class="exampleIcon filterIcon" style="' + style + '"></button></td>';
+            row.append(elStr);
+
+            $('#' + id).click(() => {
+              currentMatchIndex = [(layerIndex - 2), displayIndex, j];
+              // Show top match avg image for visual concept
+              container.find('.selectedExampleIcon')[0].style = style;
+              matchesContainer.find('.exampleIcon').removeClass('selected');
+              matchesContainer.find('.exampleIcon').removeClass('selected').eq(j).addClass('selected');
+
+              // Show bar chart for average activation
+              const data_f_1 = topMatchesData[i][j].map((v, i) => {
+                return { v: [parseFloat(v), data_f_0[i].v], i };
+              });
+              container.find('.selectedExampleBarChart').empty();
+              drawActivationGraph(container.find('.selectedExampleBarChart')[0], data_f_1);
+            });
+          }
+
+          matchesContainer.find('button:first').click();
+        });
       });
-    }
+    });
 
-    conceptsContainer.find('button:first').click();
-
+    conceptsContainer.find('button.conceptIcon:first').click();
   }
 
   loadLayer(2);
