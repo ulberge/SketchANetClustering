@@ -26,10 +26,10 @@ def get_centers(from_path, idxs):
     parts = centers_text.split(']\n[')
 
     centers = []
-    for i, part in enumerate(parts):
-        match = re.findall('\d+\.\d+', part)
-        if i in idxs:
-            centers.append(match)
+    for idx in idxs:
+        nums = parts[idx].split(',')
+        nums = map(float, nums)
+        centers.append(match)
 
     return centers
 
@@ -379,12 +379,15 @@ def get_centers2(from_path, idxs):
     from_file = open(from_path)
     # read
     text = from_file.read()
+    # print(text[:10], text[-10:])
+    text = text[1:-2]
+    # print(text[:10], text[-10:])
     parts = text.split(']\n[')
     centers = []
-    for i, part in enumerate(parts):
-        if i in idxs:
-            match = re.findall('\d+\.\d*', part)
-            centers.append(match)
+    for idx in idxs:
+        nums = parts[idx].split(',')
+        nums = map(float, nums)
+        centers.append(nums)
 
     return centers
 
@@ -397,17 +400,22 @@ def get_top_matches_data(from_path, idxs):
     matches_text_by_center = text.split(':')
 
     matches_by_center = []
-    for i, part_text in enumerate(matches_text_by_center):
-        if i in idxs:
-            parts = part_text.split(']\n[')
-            matches = []
-            for part in parts:
-                match = re.findall('\d+\.\d*', part)
-                matches.append(match)
-            matches_by_center.append(matches)
+    for idx in idxs:
+        part_text = matches_text_by_center[idx]
+        # print(part_text[:10], part_text[-10:])
+        part_text = part_text[1:-2]
+        # print(part_text[:10], part_text[-10:])
+        parts = part_text.split(']\n[')
+        matches = []
+        for part in parts:
+            nums = part.split(',')
+            nums = [n.strip() for n in nums]
+            # print(nums)
+            nums = map(float, nums)
+            matches.append(nums)
+        matches_by_center.append(matches)
 
     return matches_by_center
-
 
 def get_center_avg_imgs(old_path, idxs):
     avg_imgs = []
@@ -437,41 +445,22 @@ def get_top_image_paths(old_path, idxs):
 
 def finalize(path, old_path):
     # identify good centers from runs
-    # center_allstars = [
-    #     ['cluster_t3676242_k=8_n=146', [0, 1]],
-    #     ['cluster_t3685611_k=8_n=119', [3, 4]],
-    # ]
-    # center_allstars = [
-    #     ['cluster_t3695042_k=80_n=11863', []],
-    #     ['cluster_t3697702_k=80_n=11824', [15]],
-
-    #     ['cluster_t3702407_k=100_n=11794', [74, 31, 2, 43]],
-    #     ['cluster_t3705127_k=100_n=11842', [75]],
-    #     ['cluster_t3707861_k=140_n=11776', [9]],
-
-    #     ['cluster_t3710879_k=80_n=11871', []],
-    #     ['cluster_t3713317_k=80_n=11953', []],
-    #     ['cluster_t3715715_k=80_n=11805', [72]],
-
-    #     ['cluster_t3718061_k=80_n=11653', [24, 52]],
-    #     ['cluster_t3720467_k=80_n=11875', [20, 58, 42, 6, 71]],
-    #     ['cluster_t3722905_k=80_n=11933', [55, 79, 10]],
-    # ]
+    # L2
     center_allstars = [
-        ['cluster_t3722905_k=80_n=11933', []],
-        ['cluster_t3720467_k=80_n=11875', [15]],
-        ['cluster_t3718061_k=80_n=11653', [74, 31, 2, 43]],
+        ['cluster_t3842748_k=100_n=11762', [1, 20, 89]],
+        ['cluster_t3842548_k=100_n=11719', [64]],
+        ['cluster_t3842342_k=100_n=11981', [76, 83, 37, 47, 31]],
 
-        ['cluster_t3715715_k=80_n=11805', [75]],
-        ['cluster_t3713317_k=80_n=11953', [9]],
-        ['cluster_t3710879_k=80_n=11871', []],
+        ['cluster_t3842144_k=80_n=11836', []],
+        ['cluster_t3841947_k=80_n=11686', []],
+        ['cluster_t3841749_k=80_n=11761', [7, 69]],
 
-        ['cluster_t3707861_k=140_n=11776', []],
-        ['cluster_t3705127_k=100_n=11842', [72]],
-        ['cluster_t3702407_k=100_n=11794', [24, 52]],
+        ['cluster_t3841550_k=80_n=11723', [36, 12, 41, 49, 2, 78, 65]],
+        ['cluster_t3841344_k=80_n=11541', [66, 34]],
+        ['cluster_t3841126_k=80_n=11759', [46]],
 
-        ['cluster_t3697702_k=80_n=11824', [20, 58, 42, 6, 71]],
-        ['cluster_t3695042_k=80_n=11863', [55, 79, 10]],
+        ['cluster_t3840901_k=80_n=11945', [55, 67, 73, 23, 0, 78, 38]],
+        ['cluster_t3840679_k=80_n=11972', [0, 6, 17]],
     ]
 
     # Collect centers and top match data into files
@@ -481,6 +470,7 @@ def finalize(path, old_path):
     all_top_img_paths = []
     print('Collect data')
     for row in center_allstars:
+        print(row[0])
         center_path = old_path + row[0] + '/'
         idxs = row[1]
 
@@ -488,6 +478,7 @@ def finalize(path, old_path):
         all_centers.extend(centers)
 
         top_matches = get_top_matches_data(center_path + 'top_matches_data.txt', idxs)
+
         all_top_match_data.extend(top_matches)
 
         avg_imgs = get_center_avg_imgs(center_path, idxs)
@@ -500,17 +491,17 @@ def finalize(path, old_path):
     print('Save data')
     to_file = open(path + 'centers_data.txt', 'w')
     for center in all_centers:
-        to_file.write(','.join(center) + '\n')
+        to_file.write(','.join([str(f) for f in center]) + '\n')
 
     to_file = open(path + 'top_matches_data.txt', 'w')
-    for matches in all_top_match_data:
+    for i, matches in enumerate(all_top_match_data):
         for match in matches:
-            to_file.write(','.join(match) + '\n')
+            to_file.write(','.join([str(f) for f in match]) + '\n')
         to_file.write(':\n')
+    print('all_top_match_data', len(all_top_match_data))
 
     for i, old_path in enumerate(all_top_img_paths):
         new_path = path + 'top_matches_' + ('0' if i < 10 else '') + ('0' if i < 100 else '') + str(i) + '.png'
-        print(new_path)
         shutil.copyfile(old_path, new_path)
 
     save_imgs([i[1] for i in all_avg_imgs], path + 'top_matches_avg')
@@ -541,30 +532,54 @@ def load_layer3():
     return imgs, acts
 
 
+def load_layer4():
+    # params for L4
+    layer_name = 'conv4'
+    sample_rate = 20
+    pct = 0.1
+    threshold = 0.1
+    thresholdPct = 0.1
+
+    imgs, acts = get_imgs_and_acts(layer_name, sample_rate, pct, threshold, thresholdPct)
+    return imgs, acts
+
+
+def load_layer5():
+    # params for L5
+    layer_name = 'conv5'
+    sample_rate = 20
+    pct = 0.13
+    threshold = 0.1
+    thresholdPct = 0.1
+
+    imgs, acts = get_imgs_and_acts(layer_name, sample_rate, pct, threshold, thresholdPct)
+    return imgs, acts
+
+
 if __name__ == '__main__':
-    # path = '../docs/data/conv2/'
-    # old_path = '../results/conv2/'
-    # remove_old_files(path)
-    # finalize(path, old_path)
+    path = '../docs/data/conv2/'
+    old_path = '../results/conv2/'
+    remove_old_files(path)
+    finalize(path, old_path)
 
 
     # centers = combine_centers2(old_path)
 
-    for k in [80, 80, 80, 80, 80, 80, 80, 80, 100, 100, 100]:
-    # for k in [10]:
-        ts = str(int(time.time()))[3:]
-        imgs, acts = load_layer2()
-        path = '../results/conv2/cluster_t' + ts + '_k=' + str(k) + '_n=' + str(len(acts)) + '/'
+    # for k in [80, 80, 80, 80, 80, 80, 80, 80, 100, 100, 100]:
+    # # for k in [10]:
+    #     ts = str(int(time.time()))[3:]
+    #     imgs, acts = load_layer2()
+    #     path = '../results/conv2/cluster_t' + ts + '_k=' + str(k) + '_n=' + str(len(acts)) + '/'
 
-        try:
-            os.mkdir(path)
-        except OSError:
-            print('Creation of the directory %s failed' % path)
-        else:
-            print('Successfully created the directory %s ' % path)
+    #     try:
+    #         os.mkdir(path)
+    #     except OSError:
+    #         print('Creation of the directory %s failed' % path)
+    #     else:
+    #         print('Successfully created the directory %s ' % path)
 
-        centers = []
-        generate_data(centers, imgs, acts, path, k, num_matches=100)
+    #     centers = []
+    #     generate_data(centers, imgs, acts, path, k, num_matches=100)
 
 
     # for k in [80, 80, 80, 100, 100, 100, 120, 120, 120, 160, 200, 240, 300]:
@@ -583,6 +598,39 @@ if __name__ == '__main__':
     #     centers = []
     #     generate_data(centers, imgs, acts, path, k, num_matches=100)
 
+
+    # for k in [80, 100, 100, 120, 120, 160, 160, 200, 240, 300]:
+    # # for k in [10]:
+    #     ts = str(int(time.time()))[3:]
+    #     imgs, acts = load_layer4()
+    #     path = '../results/conv4/cluster_t' + ts + '_k=' + str(k) + '_n=' + str(len(acts)) + '/'
+
+    #     try:
+    #         os.mkdir(path)
+    #     except OSError:
+    #         print('Creation of the directory %s failed' % path)
+    #     else:
+    #         print('Successfully created the directory %s ' % path)
+
+    #     centers = []
+    #     generate_data(centers, imgs, acts, path, k, num_matches=100)
+
+
+    # for k in [80, 100, 100, 120, 120, 160, 160, 200, 240, 300]:
+    # # for k in [10]:
+    #     ts = str(int(time.time()))[3:]
+    #     imgs, acts = load_layer5()
+    #     path = '../results/conv5/cluster_t' + ts + '_k=' + str(k) + '_n=' + str(len(acts)) + '/'
+
+    #     try:
+    #         os.mkdir(path)
+    #     except OSError:
+    #         print('Creation of the directory %s failed' % path)
+    #     else:
+    #         print('Successfully created the directory %s ' % path)
+
+    #     centers = []
+    #     generate_data(centers, imgs, acts, path, k, num_matches=100)
 
 
 
