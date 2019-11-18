@@ -446,21 +446,32 @@ def get_top_image_paths(old_path, idxs):
 def finalize(path, old_path):
     # identify good centers from runs
     # L2
+    # center_allstars = [
+    #     ['cluster_t3842748_k=100_n=11762', [1, 20, 89]],
+    #     ['cluster_t3842548_k=100_n=11719', [64]],
+    #     ['cluster_t3842342_k=100_n=11981', [76, 83, 37, 47, 31]],
+
+    #     ['cluster_t3842144_k=80_n=11836', []],
+    #     ['cluster_t3841947_k=80_n=11686', []],
+    #     ['cluster_t3841749_k=80_n=11761', [7, 69]],
+
+    #     ['cluster_t3841550_k=80_n=11723', [36, 12, 41, 49, 2, 78, 65]],
+    #     ['cluster_t3841344_k=80_n=11541', [66, 34]],
+    #     ['cluster_t3841126_k=80_n=11759', [46]],
+
+    #     ['cluster_t3840901_k=80_n=11945', [55, 67, 73, 23, 0, 78, 38]],
+    #     ['cluster_t3840679_k=80_n=11972', [0, 6, 17]],
+    # ]
+
+    # L3
     center_allstars = [
-        ['cluster_t3842748_k=100_n=11762', [1, 20, 89]],
-        ['cluster_t3842548_k=100_n=11719', [64]],
-        ['cluster_t3842342_k=100_n=11981', [76, 83, 37, 47, 31]],
+        ['cluster_t3858236_k=120_n=14335', [50, 60, 5, 37, 74, 67, 85, 93, 33, 63, 108, 4]],
+        ['cluster_t3857752_k=120_n=14363', [0, 67, 81, 22, 44, 49, 59, 73, 79, 104, 115]],
+        ['cluster_t3857260_k=120_n=14496', [1, 7, 14, 20, 49, 52, 79, 83, 87, 90, 101, 112, 71]],
 
-        ['cluster_t3842144_k=80_n=11836', []],
-        ['cluster_t3841947_k=80_n=11686', []],
-        ['cluster_t3841749_k=80_n=11761', [7, 69]],
-
-        ['cluster_t3841550_k=80_n=11723', [36, 12, 41, 49, 2, 78, 65]],
-        ['cluster_t3841344_k=80_n=11541', [66, 34]],
-        ['cluster_t3841126_k=80_n=11759', [46]],
-
-        ['cluster_t3840901_k=80_n=11945', [55, 67, 73, 23, 0, 78, 38]],
-        ['cluster_t3840679_k=80_n=11972', [0, 6, 17]],
+        ['cluster_t3856783_k=100_n=14400', [34, 1, 2, 3, 8, 9, 22, 23, 26, 28, 41, 30, 43, 32]],
+        ['cluster_t3856306_k=100_n=14450', [73, 16]],
+        ['cluster_t3856783_k=100_n=14400', [44]],
     ]
 
     # Collect centers and top match data into files
@@ -557,8 +568,10 @@ def load_layer5():
 
 
 if __name__ == '__main__':
-    path = '../docs/data/conv2/'
-    old_path = '../results/conv2/'
+    # path = '../docs/data/conv2/'
+    # old_path = '../results/conv2/'
+    path = '../docs/data/conv3/'
+    old_path = '../results/conv3/'
     remove_old_files(path)
     finalize(path, old_path)
 

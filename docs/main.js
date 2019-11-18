@@ -118,7 +118,7 @@
     });
   }
 
-  async function loadLayer(layerIndex) {
+  async function loadLayer(layerIndex, order) {
     const layer = 'conv' + layerIndex;
     const container = $('#' + layer);
     const path = './data/' + layer + '/';
@@ -131,13 +131,7 @@
     const displayRowSize = 4;
     const displayRowSizeMatches = 10;
 
-    const rows = [
-      [12, 14, 13, 25, 20, 26], // verts and hors
-      [30, 27, 29, 15, 17, 16], // diags
-      [28, 19, 3, 6, 7, 10], // fields
-      [21, 11, 8, 18, 24, 22, 23, 2], // corners
-      [0, 4, 1, 7, 5] // ends
-    ];
+    const rows = order;
 
     const conceptsContainer = container.find('.concepts');
     let count = -1;
@@ -152,7 +146,7 @@
         const y = -padding - (Math.floor(i / rowSize) * iconSize);
         let style = 'background-image: url(\'' + sprite + '\');';
         style += 'background-position: ' + x + 'px ' + y + 'px;';
-        const id = name + '_button_' + displayIndex;
+        const id = layer + '_button_' + displayIndex;
         const elStr = '<td><button id="' + id + '" class="conceptIcon filterIcon" style="' + style + '"></button></td>';
         row.append(elStr);
 
@@ -185,7 +179,7 @@
             const y = -padding - (Math.floor(j / rowSize) * iconSize);
             let style = 'background-image: url(\'' + sprite + '\');';
             style += 'background-position: ' + x + 'px ' + y + 'px;';
-            const id = name + '_button_' + displayIndex + '_' + j;
+            const id = layer + '_button_' + displayIndex + '_' + j;
             const elStr = '<td><button id="' + id + '" class="exampleIcon filterIcon" style="' + style + '"></button></td>';
             row.append(elStr);
 
@@ -213,5 +207,42 @@
     conceptsContainer.find('button.conceptIcon:first').click();
   }
 
-  loadLayer(2);
+  const order2 = [
+    [12, 14, 13, 25, 20, 26], // verts and hors
+    [30, 27, 29, 15, 17, 16], // diags
+    [28, 19, 3, 6, 7, 10], // fields
+    [21, 11, 8, 18, 24, 22, 23, 2], // corners
+    [0, 4, 1, 7, 5] // ends
+  ];
+  loadLayer(2, order2);
+
+  // let order3 = [];
+  // let row = null;
+  // for (let i = 0; i < 52; i += 1) {
+  //   if (i % 10 === 0) {
+  //     if (row) {
+  //       order3.push(row);
+  //     }
+  //     row = [];
+  //   }
+  //   row.push(i);
+  // }
+  // order3.push(row);
+
+  const order3remain = [Array(52).fill(0).map((v, i) => i)];
+  let order3 = [
+    [45, 51, 1, 36, 0, 2], // lines edges
+    [38, 47, 39, 42, 44, 41], // diags
+    [14, 13, 12, 50], // corners
+    [37, 43, 9, 35], // soft corners
+    [48, 31, 32, 52], // little ends
+    [49, 19, 21, 24], // big ends
+    [34, 16, 46, 17], // shapes
+    [23, 3, 18, 20], // fields
+    [5, 15, 10, 28, 4], // repeat lines, grass
+    [22, 33, 29, 25, 11, 26, 6, 27, 30], // pipes
+  ];
+  // order3 = [order3remain[0].filter(v => !order3.flat().includes(v))];
+  // console.log(order3.flat());
+  loadLayer(3, order3);
 }());
