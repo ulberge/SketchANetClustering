@@ -216,20 +216,6 @@
   ];
   loadLayer(2, order2);
 
-  // let order3 = [];
-  // let row = null;
-  // for (let i = 0; i < 52; i += 1) {
-  //   if (i % 10 === 0) {
-  //     if (row) {
-  //       order3.push(row);
-  //     }
-  //     row = [];
-  //   }
-  //   row.push(i);
-  // }
-  // order3.push(row);
-
-  const order3remain = [Array(52).fill(0).map((v, i) => i)];
   let order3 = [
     [45, 51, 1, 36, 0, 2], // lines edges
     [38, 47, 39, 42, 44, 41], // diags
@@ -242,7 +228,33 @@
     [5, 15, 10, 28, 4], // repeat lines, grass
     [22, 33, 29, 25, 11, 26, 6, 27, 30], // pipes
   ];
-  // order3 = [order3remain[0].filter(v => !order3.flat().includes(v))];
-  // console.log(order3.flat());
   loadLayer(3, order3);
+
+  let order4 = [];
+  // let row = null;
+  // for (let i = 0; i < 57; i += 1) {
+  //   if (i % 10 === 0) {
+  //     if (row) {
+  //       order4.push(row);
+  //     }
+  //     row = [];
+  //   }
+  //   row.push(i);
+  // }
+  // order4.push(row);
+
+
+  order4.push([4, 7, 49, 15, 6, 24, 29, 35, ]); // lines edges
+  order4.push([32, 44, 46, 52, 55, ]); // corners
+  order4.push([2, 8, 12, 17, 20, 27, 28, 37, 39, 50, ]); // edge patterns
+  order4.push([3, 5, 21, 26, 30, 48, 51, ]); // field patterns
+  order4.push([9, 10, 14, 23, 29, 38, 42, 53, 0]); // pipes
+  order4.push([11, 13, 16, 22, 25, 31, 33, 43, 56]); // rounded corners
+  order4.push([19, 34, 36, 40, 41, ]); // objects
+  order4.push([45, 54, ]); // bulges
+
+  // const order4remain = [Array(57).fill(0).map((v, i) => i)];
+  // order4 = [order4remain[0].filter(v => !order4.flat().includes(v))];
+  // console.log(order4.flat());
+  loadLayer(4, order4);
 }());
