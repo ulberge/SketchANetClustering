@@ -251,4 +251,6 @@ layers_meta = [
 ]
 
 if __name__ == '__main__':
-    load_layers('../data /model_without_order_info_224.mat')
+    # load_layers('../data/model_without_order_info_224.mat')
+    model = load_model('../data/model_without_order_info_224.mat')
+

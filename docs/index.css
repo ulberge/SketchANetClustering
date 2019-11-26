@@ -5,24 +5,19 @@ body {
 .filterIcon {
   background-repeat: no-repeat;
   display: inline-block;
-  border: 1px solid transparent;
-  background-size: 1210%;
+  border: 2px solid transparent;
+  background-size: 1230%;
+  width: 37px;
+  height: 37px;
 }
 .filterIcon.selected {
-  border: 1px solid red;
+  border-color: blue;
+}
+.topMatches .filterIcon.selected {
+  border-color: red;
 }
 .centerIcon.filterIcon, .selectedExampleIcon.filterIcon {
-  width: 25px;
-  height: 25px;
   zoom: 4;
-}
-.concepts .filterIcon {
-  width: 25px;
-  height: 25px;
-}
-.topMatches .filterIcon {
-  width: 25px;
-  height: 25px;
 }
 
 /* Apply this to your `table` element. */
@@ -60,9 +55,9 @@ img {
 }
 
 .largeIcons .centerIcon {
-  border: 1px solid #0000ff;
+  border-color: blue;
 }
 
 .largeIcons .selectedExampleIcon {
-  border: 1px solid #ff0000;
+  border-color: red;
 }
