@@ -1,20 +1,22 @@
 body {
-  background: #ababab !important;
+  /*background: #ababab !important;*/
+  background: #fff !important;
+  color: #000 !important;
 }
 
 .filterIcon {
   background-repeat: no-repeat;
   display: inline-block;
-  border: 2px solid transparent;
+  border: 1px solid gray;
   background-size: 1230%;
-  width: 37px;
-  height: 37px;
+  width: 35px;
+  height: 35px;
+  /*filter: invert(1);*/
 }
-.filterIcon.selected {
-  border-color: blue;
-}
-.topMatches .filterIcon.selected {
-  border-color: red;
+
+#conv1 .filterIcon {
+  background-size: 1430%;
+
 }
 .centerIcon.filterIcon, .selectedExampleIcon.filterIcon {
   zoom: 4;
@@ -55,9 +57,41 @@ img {
 }
 
 .largeIcons .centerIcon {
-  border-color: blue;
+  border-color: #732642;
 }
 
 .largeIcons .selectedExampleIcon {
-  border-color: red;
+  border-color: #296a73;
+}
+.filterIcon.selected {
+  border-color: #732642;
+}
+.topMatches .filterIcon.selected {
+  border-color: #296a73;
+  box-shadow:  0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  margin-top: -0.5px;
+  margin-left: -0.5px;
+}
+.conceptSpriteIcon.selected {
+  border-color: #732642;
+  box-shadow:  0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  margin-top: -0.5px;
+  margin-left: -0.5px;
+}
+
+/*.filterIcon {
+  filter: invert(1);
+}*/
+
+.conceptSpriteIcon {
+  background: url('concept_sprite_thick.png?v=3') no-repeat;
+  width: 35px;
+  height: 35px;
+  border: 1px solid gray;
+  display: inline-block;
+}
+
+#conv6 .conceptSpriteIcon, #conv7 .conceptSpriteIcon {
+  width: 50px;
+  height: 50px;
 }
