@@ -6,10 +6,10 @@ An interactive exploration of visual concepts in the Sketch-A-Net CNN (trained o
 
 ## Method
 For each layer:
-	-Randomly select activations and their theoretical receptive field
-	-Run K-Means++ at various K
-    -Save cluster data, top 100 matches and their avg
-	-Select clusters with semantic and visual coherence
+⋅⋅*Randomly select activations and their theoretical receptive field
+⋅⋅*Run K-Means++ at various K
+⋅⋅⋅*Save cluster data, top 100 matches and their avg
+⋅⋅*Select clusters with semantic and visual coherence
 
 ## Sources
 J. Wang, Z. Zhang, C. Xie, V. Premachandran, and A. Yuille, “Unsupervised learning of object semantic parts from internal states of cnns by population encoding,” arXiv preprint arXiv:1511.06855, 2015.
