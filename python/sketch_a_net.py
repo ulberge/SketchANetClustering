@@ -65,6 +65,9 @@ def load_layers(filepath):
 
     model_layers = []
 
+    print(weights['conv2'].shape)
+    print(biases['conv2'].shape)
+
     # L1
     model_layers.append(layers.Conv2D(
         64,
@@ -247,6 +250,20 @@ layers_meta = [
         12,  # stride
         129,  # f_size
         36  # padding
+    ],
+    [
+        # params for L6
+        'conv6',  # layer_name
+        0,  # stride
+        225,  # f_size
+        0  # padding
+    ],
+    [
+        # params for L6
+        'conv7',  # layer_name
+        0,  # stride
+        225,  # f_size
+        0  # padding
     ]
 ]
 
