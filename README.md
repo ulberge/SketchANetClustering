@@ -7,8 +7,7 @@ An interactive exploration of visual concepts in the Sketch-A-Net CNN (trained o
 ## Method
 For each layer:
 1. Randomly select activations and their theoretical receptive field
-2. Run K-Means++ at various K
-⋅⋅* Save cluster data, top 100 matches and their avg
+2. Run K-Means++ at various K, save cluster data, top 100 matches and their avg
 3. Select clusters with semantic and visual coherence
 
 ## Sources
