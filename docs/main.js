@@ -1,26 +1,5 @@
 (function() {
 
-
-
-  // const data2 = b2.map((v, i) => {
-  //   return { v: [v], i };
-  // });
-  // drawActivationGraph($('#bias2')[0], data2);
-  // const data3 = b3.map((v, i) => {
-  //   return { v: [v], i };
-  // });
-  // drawActivationGraph($('#bias3')[0], data3);
-  // const d4 = b4.map((v, i) => {
-  //   return { v: [v], i };
-  // });
-  // drawActivationGraph($('#bias4')[0], d4);
-  // const d5 = b5.map((v, i) => {
-  //   return { v: [v], i };
-  // });
-  // drawActivationGraph($('#bias5')[0], d5);
-
-  // const biases = { b4, b5 };
-
   let currentMatchIndex = [0, 0, 0]; // layer and top match index
 
   document.onkeydown = e => {
@@ -276,7 +255,7 @@
               matchesContainer.find('.exampleIcon').removeClass('selected').eq(j).addClass('selected');
 
               // Show bar chart for average activation
-              // const bs = biases[layerIndex - 2];
+              const bs = biases[layerIndex - 2];
 
               const data_f_1 = topMatchesData[i][j].map((v, i) => {
                 return { v: [parseFloat(v), data_f_0[i].v], i };
@@ -318,7 +297,7 @@
   // ];
   const order2 = [
     [
-      12, 14, 13, 25, 20, 26, // verts and hors
+      13, 14, 12, 25, 20, 26, // verts and hors
       15, 17, 16, 30, 27, 29, // diags
       28, 19, 3, 6, 7, 10, // fields
     ],
@@ -443,7 +422,7 @@
   // order5.push(row);
   let order5 = [
     [
-      22, 37, 34, 31, // corners
+      39, 22, 37, 34, 31, // corners
       33, 35, 42, 5, // soft corners
       15, 16, 25, 15, // pipes
       54, 26, 14, // more pipes
@@ -457,7 +436,7 @@
   ];
   let spriteOrder5 = [
     [
-      0, 1, 2, 3, // corners
+      14, 0, 1, 2, 3, // corners
       12, 13, 10, 11, // soft corners
       4, 5, 6, 7, // pipes
       29, 30, 24, // more pipes
@@ -470,9 +449,9 @@
     ],
   ];
 
-  // const order4remain = [Array(57).fill(0).map((v, i) => i)];
-  // order4 = [order4remain[0].filter(v => !order4.flat().includes(v))];
-  // console.log(order4.flat());
+  // const order5remain = [Array(57).fill(0).map((v, i) => i)];
+  // order5 = [order5remain[0].filter(v => !order5.flat().includes(v))];
+  // console.log(order5.flat());
   loadLayer(5, order5, spriteOrder5);
 
   let order6 = [];
